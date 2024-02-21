@@ -1,10 +1,8 @@
 import secrets
-
 import validators
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
-
-from . import models, schemas
+from . import crud, models, schemas
 from .database import SessionLocal, engine
 
 app = FastAPI()
@@ -33,6 +31,7 @@ def create_url(url: schemas.URLBase, db: Session = Depends(get_db)):
     db.add(db_url)
     db.commit()
     db.refresh(db_url)
+    db_url = crud.create_db_url(db=db, url=url)
     db_url.url = key
     db_url.admin_url = secret_key
 
